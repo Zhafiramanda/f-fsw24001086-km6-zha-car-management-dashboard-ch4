@@ -1,5 +1,16 @@
 const { Car } = require("../models");
 
+const carPage = async (req, res) => {
+  try {
+    const cars = await Car.findAll();
+    res.render("index", { layout: 'layout/main'});
+  } catch (err) {
+    res.render("error", {
+      message: err.message,
+    });
+  }
+};
+
 const findAllCars = async (req, res) => {
   try {
     const data = await Car.findAll();
@@ -36,13 +47,13 @@ const getCarById = async (req, res) => {
 const createNewCar = async (req, res) => {
   try {
     const { id, name, image, price, size } = req.body;
-  
+
     if (!id) {
-      return res.status(400).json({ message: 'ID cannot be null' });
+      return res.status(400).json({ message: "ID cannot be null" });
     }
 
     const newCar = await Car.create({ id, name, image, price, size });
-  
+
     // Mengirimkan respons status 201 (Created) dengan data mobil yang baru dibuat
     return res.status(201).json({
       status: "success",
@@ -53,16 +64,16 @@ const createNewCar = async (req, res) => {
         price: newCar.price,
         size: newCar.size,
         createdAt: newCar.createdAt,
-        updatedAt: newCar.updatedAt
+        updatedAt: newCar.updatedAt,
       },
     });
   } catch (error) {
     console.log(error, "<-- error create new car");
     res.status(422).json({
-      status: 'failed',
-      errorMessage: error.message
-    })
-  }  
+      status: "failed",
+      errorMessage: error.message,
+    });
+  }
 };
 
 const deleteCar = async (req, res) => {
@@ -84,9 +95,8 @@ const deleteCar = async (req, res) => {
       status: "ok",
       message: `Success delete car with id ${id}`,
     });
-    
   } catch (error) {
-    console.log(error, ' <-- error delete car');
+    console.log(error, " <-- error delete car");
   }
 };
 
@@ -104,7 +114,6 @@ const updateCar = async (req, res) => {
       });
     }
 
-    // Memperbarui data mobil dengan nilai yang baru
     car.name = name;
     car.image = image;
     car.price = price;
@@ -122,19 +131,20 @@ const updateCar = async (req, res) => {
         price: car.price,
         size: car.size,
         createdAt: car.createdAt,
-        updatedAt: car.updatedAt
+        updatedAt: car.updatedAt,
       },
     });
   } catch (error) {
     console.log(error, "<-- error update car");
     res.status(422).json({
-      status: 'failed',
-      errorMessage: error.message
-    })
+      status: "failed",
+      errorMessage: error.message,
+    });
   }
 };
 
 module.exports = {
+  carPage,
   findAllCars,
   getCarById,
   createNewCar,
